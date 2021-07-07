@@ -11,6 +11,7 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,7 @@ public class ConnectorsInitializer implements InitializingBean {
         RetryTemplate template = RetryTemplate.builder()
             .maxAttempts(maxAttempts)
             .fixedBackoff(2000)
-            .retryOn(ResourceAccessException.class)
+            .retryOn(RestClientException.class)
             .build();
 
         template.execute(ctx -> {
@@ -46,7 +47,7 @@ public class ConnectorsInitializer implements InitializingBean {
                 if (!status.is2xxSuccessful())
                     throw new ResourceAccessException(status.getReasonPhrase());
 
-            } catch (ResourceAccessException e) {
+            } catch (RestClientException e) {
                 int attemptsLeft = maxAttempts - ctx.getRetryCount() - 1;
                 LOG.warn("Cannot access kafka connect service! Reason: {}. Attempts left: {}",
                     e.getMessage(), attemptsLeft);

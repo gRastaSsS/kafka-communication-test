@@ -17,7 +17,7 @@ dependencies {
 
 jib {
     to {
-        image = "rest-service"
+        image = "wage-service"
         tags = ["$version"]
     }
 }
