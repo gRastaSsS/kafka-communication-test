@@ -1,0 +1,26 @@
+{
+    "name": "wages-sink-mysql",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": 10,
+        "topics": "${WAGE_TOPIC}",
+        "key.converter": "StringConverter",
+        "value.converter": "JsonConverter",
+        "value.converter.schemas.enable": true,
+
+        "connection.url": "jdbc:mysql://db:3306/kafka_communication",
+        "connection.user": "root",
+        "connection.password": "password",
+        "insert.mode": "insert",
+        "delete.enabled": false,
+        "table.name.format": "kafka_wages",
+        "pk.mode": "record_value",
+        "pk.fields": "id",
+        "fields.whitelist": "name,surname,wage,eventTime",
+
+        "transforms": "calculate_taxes",
+        "transforms.calculate_taxes.type": "org.fluffytiger.transformers.multiplication.MultiplicationTransformValue",
+        "transforms.calculate_taxes.field.name": "wage",
+        "transforms.calculate_taxes.multiplier": "${TAX_MULTIPLIER}"
+    }
+}

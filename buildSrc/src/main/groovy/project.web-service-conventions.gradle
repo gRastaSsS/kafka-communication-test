@@ -1,0 +1,7 @@
+plugins {
+    id 'project.service-conventions'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}

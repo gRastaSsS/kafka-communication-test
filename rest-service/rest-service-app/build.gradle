@@ -1,0 +1,23 @@
+plugins {
+    id 'project.web-service-conventions'
+}
+
+group 'org.fluffytiger'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+}
+
+jib {
+    to {
+        image = "rest-service"
+        tags = ["$version"]
+    }
+}

@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+
+wages:
+  topic: ${WAGES_SINK_TOPIC:wages-topic}
+  partitions: ${WAGES_SINK_TOPIC_PARTITIONS:10}
+  replication: ${WAGES_SINK_TOPIC_REPLICATION:1}
+

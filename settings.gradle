@@ -1,0 +1,6 @@
+rootProject.name = 'kafka-communication'
+
+include ':rest-service:rest-service-app'
+include ':wage-sink-service:wage-sink-service-app'
+include ':kafka-connect-service:connect-transformers'
+include ':connectors-registry-service:connectors-registry-service-app'

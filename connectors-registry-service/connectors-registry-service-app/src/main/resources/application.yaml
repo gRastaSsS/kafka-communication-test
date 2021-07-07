@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+connect-service:
+  host: ${CONNECT_SERVICE_HOST:localhost}
+  port: ${CONNECT_SERVICE_PORT:8083}
+  retry:
+    max-attempts: 100
+  init:
+    wages-sink-mysql:
+      WAGE_TOPIC: ${WAGES_SINK_TOPIC:wages-topic}
+      TAX_MULTIPLIER: ${WAGES_SINK_TAX_MULTIPLIER:1}

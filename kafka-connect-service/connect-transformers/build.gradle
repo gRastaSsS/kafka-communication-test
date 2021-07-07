@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'org.fluffytiger'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'org.apache.kafka', name: 'connect-api', version: "${kafkaConnectVersion}"
+    implementation group: 'org.apache.kafka', name: 'connect-transforms', version: "${kafkaConnectVersion}"
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${junitVersion}"
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${junitVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}

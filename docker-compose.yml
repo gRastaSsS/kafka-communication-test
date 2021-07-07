@@ -1,0 +1,92 @@
+version: "2"
+
+networks:
+  app:
+    driver: bridge
+
+services:
+  db:
+    image: mysql:8.0
+    networks:
+      - app
+    ports:
+      - "33061:3306"
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=kafka_communication
+      - MYSQL_ROOT_PASSWORD=password
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.0.0
+    networks:
+      - app
+    ports:
+      - "2181:2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+  kafka:
+    image: confluentinc/cp-kafka:5.0.0
+    networks:
+      - app
+    ports:
+      - 29092:29092
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    depends_on:
+      - zookeeper
+
+  kafka-connect:
+    build:
+      context: kafka-connect-service
+      dockerfile: Dockerfile
+    networks:
+      - app
+    ports:
+      - "8083:8083"
+    environment:
+      - CONNECT_BOOTSTRAP_SERVERS=kafka:9092
+      - CONNECT_REST_PORT=8083
+      - CONNECT_GROUP_ID=kafka-communication-group
+      - CONNECT_CONFIG_STORAGE_TOPIC=connect-configs
+      - CONNECT_OFFSET_STORAGE_TOPIC=connect-offsets
+      - CONNECT_STATUS_STORAGE_TOPIC=connect-statuses
+      - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect
+      - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars
+    depends_on:
+      - zookeeper
+
+  connectors-registry-service:
+    image: connectors-registry-service:latest
+    ports:
+      - "8091:8080"
+    networks:
+      - app
+    environment:
+      - CONNECT_SERVICE_HOST=kafka-connect
+      - WAGES_SINK_TAX_MULTIPLIER=1.2
+      - WAGES_SINK_TOPIC=wages-topic
+    depends_on:
+      - kafka-connect
+
+  rest-service:
+    image: rest-service:latest
+    ports:
+      - "8090:8080"
+    networks:
+      - app
+    environment:
+      - WAGES_SINK_TOPIC=wages-topic

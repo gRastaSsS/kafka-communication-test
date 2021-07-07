@@ -1,0 +1,30 @@
+{
+    "type": "struct",
+    "fields": [
+        {
+            "field": "name",
+            "optional": false,
+            "type": "string"
+        },
+        {
+            "field": "surname",
+            "optional": false,
+            "type": "string"
+        },
+        {
+            "field": "wage",
+            "optional": false,
+            "type": "double"
+        },
+        {
+            "field": "eventTime",
+            "optional": false,
+            "type": "string"
+        },
+        {
+            "field": "id",
+            "optional": false,
+            "type": "string"
+        }
+    ]
+}
