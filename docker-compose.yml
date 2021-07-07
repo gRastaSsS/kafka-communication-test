@@ -69,13 +69,6 @@ services:
     depends_on:
       - zookeeper
 
-  api-gateway:
-    image: api-gateway-service:latest
-    ports:
-      - "8092:8080"
-    networks:
-      - app
-
   connectors-registry-service:
     image: connectors-registry-service:latest
     ports:
