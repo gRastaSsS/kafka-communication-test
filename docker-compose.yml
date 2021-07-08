@@ -77,8 +77,8 @@ services:
       - app
     environment:
       - CONNECT_SERVICE_HOST=kafka-communication_kafka-connect_1
-      - WAGES_SINK_TAX_MULTIPLIER=1.2
-      - WAGES_SINK_TOPIC=wages-topic
+      - WAGES_SINK_TAX_MULTIPLIER=${WAGES_SINK_TAX_MULTIPLIER}
+      - WAGES_SINK_TOPIC=${WAGES_SINK_TOPIC}
     depends_on:
       - kafka-connect
 
@@ -89,4 +89,6 @@ services:
     networks:
       - app
     environment:
-      - WAGES_SINK_TOPIC=wages-topic
+      - WAGES_SINK_TOPIC=${WAGES_SINK_TOPIC}
+      - WAGES_SINK_TOPIC_PARTITIONS=${WAGES_SINK_TOPIC_PARTITIONS}
+      - WAGES_SINK_TOPIC_REPLICATION=${WAGES_SINK_TOPIC_REPLICATION}
