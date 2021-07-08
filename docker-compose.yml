@@ -48,8 +48,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - app
-    ports:
-      - "8083:8083"
+    expose:
+      - "8083"
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=kafka:9092
       - CONNECT_REST_PORT=8083
@@ -72,11 +72,11 @@ services:
   connectors-registry-service:
     image: connectors-registry-service:latest
     ports:
-      - "8091:8080"
+      - "8080:8080"
     networks:
       - app
     environment:
-      - CONNECT_SERVICE_HOST=kafka-connect
+      - CONNECT_SERVICE_HOST=kafka-communication_kafka-connect_1
       - WAGES_SINK_TAX_MULTIPLIER=1.2
       - WAGES_SINK_TOPIC=wages-topic
     depends_on:
@@ -85,7 +85,7 @@ services:
   wage-service:
     image: wage-service:latest
     ports:
-      - "8090:8080"
+      - "8090-8099:8080"
     networks:
       - app
     environment:
